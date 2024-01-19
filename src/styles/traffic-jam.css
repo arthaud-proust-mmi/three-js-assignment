@@ -24,14 +24,14 @@
   height: 100%;
   padding: 1rem;
   color: #000000;
-  background: #f2f2f2;
+  background: rgba(229, 229, 229, 0.4);
 }
 
 #toggleSound:hover {
-  background: #d0d0d0;
+  background: rgba(253, 253, 253, 0.8);
 }
 #toggleSound:active {
-  background: #ffffff;
+  background: rgba(213, 213, 213, 0.8);
 }
 
 #toggleSound.muted .mute {
