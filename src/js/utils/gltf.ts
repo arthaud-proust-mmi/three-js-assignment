@@ -1,9 +1,9 @@
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 const gltfLoader = new GLTFLoader();
 
 export const loadGltf = (path) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<GLTF>((resolve, reject) => {
     gltfLoader.load(
       path,
       (gltf) => resolve(gltf),

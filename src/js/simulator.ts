@@ -1,8 +1,7 @@
 import { Car } from "@/js/entities/car";
 import { makeRandomDecoration } from "@/js/objects/decorations";
-import { randomAngle } from "@/js/utils/random";
+import { randomAngle, randomFloat, randomInt } from "@/js/utils/random";
 import * as THREE from "three";
-import { randFloat, randInt } from "three/src/math/MathUtils";
 
 const ROAD_WIDTH = 5;
 const FLOOR_HEIGHT = 0.1;
@@ -35,22 +34,22 @@ export class TrafficJamSimulator {
 
     this.scene.add(this.group);
 
-    this.#bindControls();
+    this.bindControls();
   }
 
   update({ delta }) {
-    this.#addCarIfEnoughSpace();
+    this.addCarIfEnoughSpace();
 
     this.cars.forEach((car) => {
       car.update({ delta });
 
-      const carAhead = this.#getCarAhead(car);
+      const carAhead = this.getCarAhead(car);
       if (carAhead) {
         car.adjustSpeedInFunctionOfCar(carAhead);
       }
 
       if (this.isCarOutOfMap(car)) {
-        this.#removeCar(car);
+        this.removeCar(car);
         return;
       }
     });
@@ -120,40 +119,40 @@ export class TrafficJamSimulator {
   async makeRandomDecoration() {
     const decorationMesh = await makeRandomDecoration();
 
-    const side = randInt(0, 1) ? -1 : 1;
+    const side = randomInt(0, 1) ? -1 : 1;
 
     const roadSafeDistance = ROAD_WIDTH * 1.5;
     const maxDistance = (4 * ROAD_LENGTH) / 5;
-    decorationMesh.position.x = randFloat(
+    decorationMesh.position.x = randomFloat(
       (side * roadSafeDistance) / 2,
       (side * maxDistance) / 2,
     );
-    decorationMesh.position.z = randFloat(-maxDistance / 2, maxDistance / 2);
+    decorationMesh.position.z = randomFloat(-maxDistance / 2, maxDistance / 2);
 
     decorationMesh.rotation.y = randomAngle();
 
     return decorationMesh;
   }
 
-  async #addCarIfEnoughSpace() {
+  private async addCarIfEnoughSpace() {
     if (this.cars.length === 0) {
-      this.#addRandomCar();
+      this.addRandomCar();
       return;
     }
 
     const lastCardPosition = this.cars[this.cars.length - 1].getPosition();
 
-    const randomDistance = randFloat(0, 30);
+    const randomDistance = randomFloat(0, 30);
 
     if (
       lastCardPosition.z >
       CAR_SUMMON_POSITION.z + CAR_START_DISTANCE + randomDistance
     ) {
-      this.#addRandomCar();
+      this.addRandomCar();
     }
   }
 
-  async #addRandomCar() {
+  private async addRandomCar() {
     if (!this.group) {
       return;
     }
@@ -176,20 +175,20 @@ export class TrafficJamSimulator {
     return car;
   }
 
-  #removeCar(carToRemove) {
+  private removeCar(carToRemove) {
     carToRemove.removeFromGroup(this.group);
 
-    const carIndex = this.#getCarIndex(carToRemove);
+    const carIndex = this.getCarIndex(carToRemove);
 
     this.cars.splice(carIndex, 1);
   }
 
-  #getCarIndex(carToFind) {
+  private getCarIndex(carToFind) {
     return this.cars.findIndex((car) => car.uuid === carToFind.uuid);
   }
 
-  #getCarAhead(car) {
-    const carIndex = this.#getCarIndex(car);
+  private getCarAhead(car) {
+    const carIndex = this.getCarIndex(car);
 
     if (carIndex === 0) {
       return null;
@@ -197,7 +196,7 @@ export class TrafficJamSimulator {
     return this.cars[carIndex - 1];
   }
 
-  #bindControls() {
+  private bindControls() {
     const toggleSoundBtn = document.getElementById("toggleSound");
     const toggleCarBtn = document.getElementById("toggleCar");
 
