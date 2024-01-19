@@ -1,22 +1,19 @@
 import { enableShadows, loadGltf } from "@/utils/gltf";
 import { randomItem } from "@/utils/random";
-import { ObjectCache } from "./cache";
 
-const carCache = new ObjectCache({
-  loadFn: async (carName) => {
-    const carModel = await loadGltf(`/models/cars/${carName}.glb`);
+const loadCar = async (carName) => {
+  const carModel = await loadGltf(`/models/cars/${carName}.glb`);
 
-    return enableShadows(carModel.scene);
-  },
-});
+  return enableShadows(carModel.scene);
+};
 
-export const makePoliceCar = async () => carCache.load("police-car");
-export const makeCar1 = async () => carCache.load("car-1");
-export const makeCar2 = async () => carCache.load("car-2");
-export const makeSuv = async () => carCache.load("suv");
-export const makeTaxi = async () => carCache.load("taxi");
-export const makeSportsCar1 = async () => carCache.load("sports-car-1");
-export const makeSportsCar2 = async () => carCache.load("sports-car-2");
+export const makePoliceCar = async () => loadCar("police-car");
+export const makeCar1 = async () => loadCar("car-1");
+export const makeCar2 = async () => loadCar("car-2");
+export const makeSuv = async () => loadCar("suv");
+export const makeTaxi = async () => loadCar("taxi");
+export const makeSportsCar1 = async () => loadCar("sports-car-1");
+export const makeSportsCar2 = async () => loadCar("sports-car-2");
 
 const carMakers = [
   makePoliceCar,

@@ -2,6 +2,8 @@ import { TrafficJamSimulator } from "@/traffic-jam/simulator";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
+THREE.Cache.enabled = true;
+
 /**
  * Base
  */
