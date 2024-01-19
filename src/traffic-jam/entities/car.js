@@ -1,6 +1,7 @@
 import { makeRandomCar } from "@/traffic-jam/objects/cars";
 import * as THREE from "three";
 import { v4 as uuidv4 } from "uuid";
+import { playRandomCarHorn } from "../sounds/carHorns";
 
 export class Car {
   _group = null;
@@ -12,6 +13,10 @@ export class Car {
 
   maxSpeed = 0;
   speed = 0;
+
+  honkUnderSpeed = 10;
+  honkInterval = 2;
+  noHonkedSince = 0;
 
   static async makeRandom() {
     const randomModel = await makeRandomCar();
@@ -46,7 +51,20 @@ export class Car {
   }
 
   update({ delta }) {
+    if (this.speed < this.honkUnderSpeed) {
+      this.honkRegularly(delta);
+    }
+
     this._group.position.z += delta * this.speed;
+  }
+
+  honkRegularly(delta) {
+    this.noHonkedSince += delta;
+
+    if (this.noHonkedSince > this.honkInterval) {
+      this.noHonkedSince = 0;
+      playRandomCarHorn();
+    }
   }
 
   start() {
