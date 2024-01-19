@@ -1,3 +1,53 @@
+#topLeftActions {
+  position: fixed;
+  left: 1rem;
+  top: 1rem;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+
+#toggleSound {
+  font-family: "Play", sans-serif;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  pointer-events: all;
+  font-size: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  box-sizing: border-box;
+  height: 100%;
+  padding: 1rem;
+  color: #000000;
+  background: #f2f2f2;
+}
+
+#toggleSound:hover {
+  background: #d0d0d0;
+}
+#toggleSound:active {
+  background: #ffffff;
+}
+
+#toggleSound.muted .mute {
+  display: none;
+}
+#toggleSound.muted .unmute {
+  display: initial;
+}
+
+#toggleSound.unmuted .unmute {
+  display: none;
+}
+#toggleSound.unmuted .mute {
+  display: initial;
+}
+
 #bottomActions {
   position: fixed;
   left: 1rem;

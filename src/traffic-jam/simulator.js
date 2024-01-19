@@ -26,6 +26,8 @@ export class TrafficJamSimulator {
   elapsedTimeSinceCarAdded = 0;
   cars = [];
 
+  isMuted = true;
+
   constructor({ scene }) {
     this.scene = scene;
   }
@@ -160,7 +162,7 @@ export class TrafficJamSimulator {
       return;
     }
 
-    const car = await Car.makeRandom();
+    const car = await Car.makeRandom(this);
     car.addToGroup(this.group);
 
     car.maxSpeed = CAR_MAX_SPEED;
@@ -200,7 +202,18 @@ export class TrafficJamSimulator {
   }
 
   bindControls() {
+    const toggleSoundBtn = document.getElementById("toggleSound");
     const toggleCarBtn = document.getElementById("toggleCar");
+
+    toggleSoundBtn.addEventListener("click", () => {
+      if (this.isMuted === true) {
+        this.isMuted = false;
+        toggleSoundBtn.classList.replace("muted", "unmuted");
+      } else {
+        this.isMuted = true;
+        toggleSoundBtn.classList.replace("unmuted", "muted");
+      }
+    });
 
     const toggleFirstCar = () => {
       const firstCar = this.cars[0];
@@ -213,12 +226,10 @@ export class TrafficJamSimulator {
 
       if (isStopped) {
         firstCar.start();
-        toggleCarBtn.classList.remove("stopped");
-        toggleCarBtn.classList.add("started");
+        toggleCarBtn.classList.replace("stopped", "started");
       } else {
         firstCar.stop();
-        toggleCarBtn.classList.remove("started");
-        toggleCarBtn.classList.add("stopped");
+        toggleCarBtn.classList.replace("started", "stopped");
       }
     };
 

@@ -4,9 +4,10 @@ import { v4 as uuidv4 } from "uuid";
 import { playRandomCarHorn } from "../sounds/carHorns";
 
 export class Car {
-  _group = null;
+  _group;
 
-  uuid = null;
+  simulator;
+  uuid;
 
   stopDistance = 0;
   startDistance = 0;
@@ -15,16 +16,17 @@ export class Car {
   speed = 0;
 
   honkUnderSpeed = 10;
-  honkInterval = 2;
+  honkInterval = 4;
   noHonkedSince = 0;
 
-  static async makeRandom() {
+  static async makeRandom(simulator) {
     const randomModel = await makeRandomCar();
 
-    return new Car(randomModel);
+    return new Car(randomModel, simulator);
   }
 
-  constructor(model) {
+  constructor(model, simulator) {
+    this.simulator = simulator;
     this.uuid = uuidv4();
     this._group = new THREE.Group();
     this._group.add(model);
@@ -63,7 +65,10 @@ export class Car {
 
     if (this.noHonkedSince > this.honkInterval) {
       this.noHonkedSince = 0;
-      playRandomCarHorn();
+
+      if (!this.simulator.isMuted) {
+        playRandomCarHorn();
+      }
     }
   }
 
