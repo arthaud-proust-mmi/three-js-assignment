@@ -1,4 +1,4 @@
-import { Car } from "@/js/entities/car";
+import { Car, CarSettings } from "@/js/entities/car";
 import { makeRandomDecoration } from "@/js/objects/decorations";
 import { randomAngle, randomFloat, randomInt } from "@/js/utils/random";
 import * as THREE from "three";
@@ -13,19 +13,25 @@ const CAR_SUMMON_POSITION = {
   z: -ROAD_LENGTH / 2,
 };
 
-const CAR_MAX_SPEED = 15;
-const CAR_STOP_DISTANCE = 5;
-const CAR_START_DISTANCE = 10;
+export type TrafficJamSimulatorSettings = {
+  maxCar: number;
+  car: CarSettings;
+};
 
 export class TrafficJamSimulator {
   scene: THREE.Scene;
   group: THREE.Group;
 
+  private settings: TrafficJamSimulatorSettings;
   cars: Array<Car> = [];
 
   isMuted: boolean = true;
 
-  constructor({ scene }) {
+  private toggleSoundBtn = document.getElementById("toggleSound");
+  private toggleCarBtn = document.getElementById("toggleCar");
+
+  constructor({ settings, scene }) {
+    this.defineSettings(settings);
     this.scene = scene;
   }
 
@@ -37,16 +43,23 @@ export class TrafficJamSimulator {
     this.bindControls();
   }
 
+  defineSettings(settings: TrafficJamSimulatorSettings) {
+    this.settings = settings;
+
+    this.cars.forEach((car) => {
+      car.defineSettings(this.settings.car);
+    });
+  }
+
   update({ delta }: { delta: number }): void {
+    this.updateCarControl();
+
     this.addCarIfEnoughSpace();
 
     this.cars.forEach((car) => {
       car.update({ delta });
 
-      const carAhead = this.getCarAhead(car);
-      if (carAhead) {
-        car.adjustSpeedInFunctionOfCar(carAhead);
-      }
+      car.adjustSpeedWithCarAhead(this.getCarAhead(car));
 
       if (this.isCarOutOfMap(car)) {
         this.removeCar(car);
@@ -135,6 +148,10 @@ export class TrafficJamSimulator {
   }
 
   private async addCarIfEnoughSpace(): Promise<void> {
+    if (this.cars.length >= this.settings.maxCar) {
+      return;
+    }
+
     if (this.cars.length === 0) {
       this.addRandomCar();
       return;
@@ -146,7 +163,7 @@ export class TrafficJamSimulator {
 
     if (
       lastCardPosition.z >
-      CAR_SUMMON_POSITION.z + CAR_START_DISTANCE + randomDistance
+      CAR_SUMMON_POSITION.z + this.settings.car.startDistance + randomDistance
     ) {
       this.addRandomCar();
     }
@@ -157,12 +174,13 @@ export class TrafficJamSimulator {
       return;
     }
 
-    const car = await Car.makeRandom(this);
+    const car = await Car.makeRandom({
+      simulator: this,
+      settings: this.settings.car,
+    });
     car.addToGroup(this.group);
 
-    car.maxSpeed = CAR_MAX_SPEED;
-    car.stopDistance = CAR_STOP_DISTANCE;
-    car.startDistance = CAR_START_DISTANCE;
+    car.defineSettings(this.settings.car);
 
     car.setPosition(CAR_SUMMON_POSITION);
 
@@ -197,16 +215,13 @@ export class TrafficJamSimulator {
   }
 
   private bindControls(): void {
-    const toggleSoundBtn = document.getElementById("toggleSound");
-    const toggleCarBtn = document.getElementById("toggleCar");
-
-    toggleSoundBtn.addEventListener("click", () => {
+    this.toggleSoundBtn.addEventListener("click", () => {
       if (this.isMuted === true) {
         this.isMuted = false;
-        toggleSoundBtn.classList.replace("muted", "unmuted");
+        this.toggleSoundBtn.classList.replace("muted", "unmuted");
       } else {
         this.isMuted = true;
-        toggleSoundBtn.classList.replace("unmuted", "muted");
+        this.toggleSoundBtn.classList.replace("unmuted", "muted");
       }
     });
 
@@ -217,18 +232,10 @@ export class TrafficJamSimulator {
         return;
       }
 
-      const isStopped = firstCar.speed === 0;
-
-      if (isStopped) {
-        firstCar.start();
-        toggleCarBtn.classList.replace("stopped", "started");
-      } else {
-        firstCar.stop();
-        toggleCarBtn.classList.replace("started", "stopped");
-      }
+      firstCar.toggle();
     };
 
-    toggleCarBtn.addEventListener("click", () => {
+    this.toggleCarBtn.addEventListener("click", () => {
       toggleFirstCar();
     });
 
@@ -237,5 +244,18 @@ export class TrafficJamSimulator {
         toggleFirstCar();
       }
     });
+  }
+
+  updateCarControl() {
+    const firstCar = this.cars[0];
+
+    if (!firstCar) {
+      return;
+    }
+
+    const isStopped = firstCar.state === "stopped";
+
+    this.toggleCarBtn.classList.toggle("stopped", isStopped);
+    this.toggleCarBtn.classList.toggle("started", !isStopped);
   }
 }

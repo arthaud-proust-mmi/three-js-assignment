@@ -4,34 +4,68 @@ import { v4 as uuidv4 } from "uuid";
 import { TrafficJamSimulator } from "../simulator";
 import { playRandomCarHorn } from "../sounds/carHorns";
 
+export type CarSettings = {
+  acceleration: number;
+  maxSpeed: number;
+  stopDistance: number;
+  startDistance: number;
+};
+
+const MIN_SPEED = 0;
+
 export class Car {
   private group: THREE.Group;
   private simulator: TrafficJamSimulator;
 
   uuid: uuidv4;
 
-  stopDistance: number = 0;
-  startDistance: number = 0;
+  state: "started" | "stopped";
 
-  maxSpeed: number = 0;
+  private settings: CarSettings;
+
+  speedTarget: number = 0;
   speed: number = 0;
 
   honkUnderSpeed: number = 10;
   honkInterval: number = 4;
   noHonkedSince: number = 0;
 
-  static async makeRandom(simulator: TrafficJamSimulator): Promise<Car> {
-    const randomModel = await makeRandomCar();
+  static async makeRandom({
+    simulator,
+    settings,
+  }: {
+    simulator: TrafficJamSimulator;
+    settings: CarSettings;
+  }): Promise<Car> {
+    const model = await makeRandomCar();
 
-    return new Car(randomModel, simulator);
+    return new Car({ model, simulator, settings });
   }
 
-  constructor(model, simulator: TrafficJamSimulator) {
+  constructor({
+    model,
+    simulator,
+    settings,
+  }: {
+    model: any;
+    simulator: TrafficJamSimulator;
+    settings: CarSettings;
+  }) {
     this.uuid = uuidv4();
+
+    this.defineSettings(settings);
     this.simulator = simulator;
 
     this.group = new THREE.Group();
     this.group.add(model);
+  }
+
+  defineSettings(settings: CarSettings) {
+    this.settings = settings;
+
+    if (this.state === "started") {
+      this.speedTarget = this.settings.maxSpeed;
+    }
   }
 
   addToGroup(group: THREE.Group): void {
@@ -55,11 +89,19 @@ export class Car {
   }
 
   update({ delta }: { delta: number }): void {
-    if (this.speed < this.honkUnderSpeed) {
-      this.honkRegularly(delta);
+    if (this.speed > this.speedTarget) {
+      this.speed -= this.settings.acceleration;
+    }
+
+    if (this.speed < this.speedTarget) {
+      this.speed += this.settings.acceleration;
     }
 
     this.group.position.z += delta * this.speed;
+
+    if (this.speed < this.honkUnderSpeed) {
+      this.honkRegularly(delta);
+    }
   }
 
   private honkRegularly(delta: number): void {
@@ -75,19 +117,31 @@ export class Car {
   }
 
   start(): void {
-    this.speed = this.maxSpeed;
+    this.state = "started";
+
+    this.speedTarget = this.settings.maxSpeed;
   }
 
   stop(): void {
-    this.speed = 0;
+    this.state = "stopped";
+
+    this.speedTarget = MIN_SPEED;
   }
 
-  adjustSpeedInFunctionOfCar(car: Car): void {
+  toggle(): void {
+    this.state === "started" ? this.stop() : this.start();
+  }
+
+  adjustSpeedWithCarAhead(car: Car | null): void {
+    if (!car) {
+      return;
+    }
+
     const distance = this.distanceWithCar(car);
 
-    if (distance < this.stopDistance) {
+    if (distance < this.settings.stopDistance) {
       this.stop();
-    } else if (distance > this.startDistance) {
+    } else if (distance > this.settings.startDistance) {
       this.start();
     }
   }

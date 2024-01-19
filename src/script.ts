@@ -1,4 +1,8 @@
-import { TrafficJamSimulator } from "@/js/simulator";
+import {
+  TrafficJamSimulator,
+  TrafficJamSimulatorSettings,
+} from "@/js/simulator";
+import GUI from "lil-gui";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
@@ -12,10 +16,6 @@ const canvas = document.querySelector("canvas.webgl") as HTMLCanvasElement;
 
 // Scene
 const scene = new THREE.Scene();
-
-const trafficJamSimulator = new TrafficJamSimulator({ scene });
-
-trafficJamSimulator.init();
 
 /**
  * Sizes
@@ -38,6 +38,76 @@ window.addEventListener("resize", () => {
   renderer.setSize(sizes.width, sizes.height);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
+
+/**
+ * GUI
+ */
+const gui = new GUI();
+
+/**
+ * Experience
+ */
+const simulatorSettings: TrafficJamSimulatorSettings = {
+  maxCar: 20,
+  car: {
+    acceleration: 0.5,
+    maxSpeed: 15,
+    stopDistance: 10,
+    startDistance: 10,
+  },
+};
+
+const simulator = new TrafficJamSimulator({
+  scene,
+  settings: simulatorSettings,
+});
+
+gui
+  .add(simulatorSettings, "maxCar")
+  .min(2)
+  .max(20)
+  .step(1)
+  .onFinishChange(() => {
+    simulator.defineSettings(simulatorSettings);
+  });
+
+gui
+  .add(simulatorSettings.car, "acceleration")
+  .min(0.1)
+  .max(5)
+  .step(0.1)
+  .onFinishChange(() => {
+    simulator.defineSettings(simulatorSettings);
+  });
+
+gui
+  .add(simulatorSettings.car, "maxSpeed")
+  .min(5)
+  .max(30)
+  .step(1)
+  .onFinishChange(() => {
+    simulator.defineSettings(simulatorSettings);
+  });
+
+gui
+  .add(simulatorSettings.car, "stopDistance")
+  .min(5)
+  .max(30)
+  .step(1)
+  .onFinishChange(() => {
+    simulator.defineSettings(simulatorSettings);
+  });
+
+gui
+  .add(simulatorSettings.car, "startDistance")
+  .min(7)
+  .max(20)
+  .step(1)
+  .onFinishChange(() => {
+    simulator.defineSettings(simulatorSettings);
+  });
+
+simulator.init();
 
 /**
  * Camera
@@ -83,7 +153,7 @@ const tick = () => {
   // Update controls
   controls.update();
 
-  trafficJamSimulator.update({ delta });
+  simulator.update({ delta });
 
   // Render
   renderer.render(scene, camera);
