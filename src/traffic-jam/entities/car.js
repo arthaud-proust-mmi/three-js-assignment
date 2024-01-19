@@ -67,8 +67,6 @@ export class Car {
       +Infinity,
     );
 
-    console.log(nearestDistance);
-
     if (nearestDistance < STOP_DISTANCE) {
       this.stop();
     } else if (nearestDistance > START_DISTANCE) {
