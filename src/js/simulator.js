@@ -8,7 +8,6 @@ const ROAD_WIDTH = 5;
 const FLOOR_HEIGHT = 0.1;
 const ROAD_LENGTH = 100;
 const FLOOR_WIDTH = ROAD_LENGTH / 2 - ROAD_WIDTH;
-const CAR_COUNT = 15;
 const CAR_SUMMON_POSITION = {
   x: 0,
   y: 0,
@@ -20,10 +19,9 @@ const CAR_STOP_DISTANCE = 5;
 const CAR_START_DISTANCE = 10;
 
 export class TrafficJamSimulator {
-  scene = null;
-  group = null;
+  scene;
+  group;
 
-  elapsedTimeSinceCarAdded = 0;
   cars = [];
 
   isMuted = true;
@@ -37,22 +35,22 @@ export class TrafficJamSimulator {
 
     this.scene.add(this.group);
 
-    this.bindControls();
+    this.#bindControls();
   }
 
   update({ delta }) {
-    this.addCarIfEnoughSpace();
+    this.#addCarIfEnoughSpace();
 
     this.cars.forEach((car) => {
       car.update({ delta });
 
-      const carAhead = this.getCarAhead(car);
+      const carAhead = this.#getCarAhead(car);
       if (carAhead) {
         car.adjustSpeedInFunctionOfCar(carAhead);
       }
 
       if (this.isCarOutOfMap(car)) {
-        this.removeCar(car);
+        this.#removeCar(car);
         return;
       }
     });
@@ -137,9 +135,9 @@ export class TrafficJamSimulator {
     return decorationMesh;
   }
 
-  async addCarIfEnoughSpace() {
+  async #addCarIfEnoughSpace() {
     if (this.cars.length === 0) {
-      this.addRandomCar();
+      this.#addRandomCar();
       return;
     }
 
@@ -151,13 +149,11 @@ export class TrafficJamSimulator {
       lastCardPosition.z >
       CAR_SUMMON_POSITION.z + CAR_START_DISTANCE + randomDistance
     ) {
-      this.addRandomCar();
+      this.#addRandomCar();
     }
-
-    this.elapsedTimeSinceCarAdded = 0;
   }
 
-  async addRandomCar() {
+  async #addRandomCar() {
     if (!this.group) {
       return;
     }
@@ -180,20 +176,20 @@ export class TrafficJamSimulator {
     return car;
   }
 
-  removeCar(carToRemove) {
+  #removeCar(carToRemove) {
     carToRemove.removeFromGroup(this.group);
 
-    const carIndex = this.getCarIndex(carToRemove);
+    const carIndex = this.#getCarIndex(carToRemove);
 
     this.cars.splice(carIndex, 1);
   }
 
-  getCarIndex(carToFind) {
+  #getCarIndex(carToFind) {
     return this.cars.findIndex((car) => car.uuid === carToFind.uuid);
   }
 
-  getCarAhead(car) {
-    const carIndex = this.getCarIndex(car);
+  #getCarAhead(car) {
+    const carIndex = this.#getCarIndex(car);
 
     if (carIndex === 0) {
       return null;
@@ -201,7 +197,7 @@ export class TrafficJamSimulator {
     return this.cars[carIndex - 1];
   }
 
-  bindControls() {
+  #bindControls() {
     const toggleSoundBtn = document.getElementById("toggleSound");
     const toggleCarBtn = document.getElementById("toggleCar");
 
