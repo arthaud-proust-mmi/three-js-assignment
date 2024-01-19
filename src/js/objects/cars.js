@@ -1,5 +1,5 @@
-import { enableShadows, loadGltf } from "@/utils/gltf";
-import { randomItem } from "@/utils/random";
+import { enableShadows, loadGltf } from "@/js/utils/gltf";
+import { randomItem } from "@/js/utils/random";
 
 const loadCar = async (carName) => {
   const carModel = await loadGltf(`/models/cars/${carName}.glb`);

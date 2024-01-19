@@ -1,6 +1,6 @@
 import { Car } from "@/js/entities/car";
 import { makeRandomDecoration } from "@/js/objects/decorations";
-import { randomAngle } from "@/utils/random";
+import { randomAngle } from "@/js/utils/random";
 import * as THREE from "three";
 import { randFloat, randInt } from "three/src/math/MathUtils";
 

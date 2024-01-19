@@ -1,4 +1,4 @@
-import { randomItem } from "@/utils/random";
+import { randomItem } from "@/js/utils/random";
 
 const carHorn1 = new Audio("/sounds/car-horn-1.mp3");
 const carHorn2 = new Audio("/sounds/car-horn-2.mp3");
