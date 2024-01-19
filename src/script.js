@@ -53,24 +53,6 @@ camera.position.z = 0;
 camera.lookAt(new THREE.Vector3(0, 0, 0));
 scene.add(camera);
 
-/**
- * Lights
- */
-// Ambient light
-const ambientLight = new THREE.AmbientLight("#EAE38C", 0.7);
-scene.add(ambientLight);
-
-// Directional light
-const moonLight = new THREE.DirectionalLight("#FF5733", 1);
-moonLight.position.set(35, 20, -50);
-const d = 50;
-moonLight.shadow.camera.left = -d;
-moonLight.shadow.camera.right = d;
-moonLight.shadow.camera.bottom = -d;
-moonLight.shadow.camera.top = d;
-moonLight.castShadow = true;
-scene.add(moonLight);
-
 // Controls
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;

@@ -103,6 +103,21 @@ export class TrafficJamSimulator {
       group.add(decoration);
     }
 
+    // Ambient light
+    const ambientLight = new THREE.AmbientLight("#EAE38C", 0.7);
+    group.add(ambientLight);
+
+    // Directional light
+    const moonLight = new THREE.DirectionalLight("#FF5733", 1);
+    moonLight.position.set(35, 20, -50);
+    const d = 50;
+    moonLight.shadow.camera.left = -d;
+    moonLight.shadow.camera.right = d;
+    moonLight.shadow.camera.bottom = -d;
+    moonLight.shadow.camera.top = d;
+    moonLight.castShadow = true;
+    group.add(moonLight);
+
     return group;
   }
 
