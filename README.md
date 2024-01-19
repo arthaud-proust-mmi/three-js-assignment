@@ -2,20 +2,23 @@
 
 ## Contexte
 
-Au [MMI Bordeaux](https://mmibordeaux.com) les personnes étudiants en parcours Développement Web et Dispositifs Interactifs ont pu être formé sur ThreeJs avec [ThreeJs Journey](https://threejs-journey.com/) et passer la certification par la même occasion.
+Au [MMI Bordeaux](https://mmibordeaux.com) les étudiantes et étudiants en parcours Développement Web et Dispositifs Interactifs ont pu être formé sur ThreeJs avec [ThreeJs Journey](https://threejs-journey.com/) et passer la certification par la même occasion.
 
 ## Description du rendu
 
-Le rendu est un petit jeu où une personne se cache dans le brouillard et doit atteindre une cachette sans être vu par les personnes le cherchant.
+Le rendu est un petit simulateur de bouchons routier : appuyez sur espace pour stopper une voiture et créer un bouchon.
+Manipulez les variables pour étudier le phénomène qui se créée !
 
 ## Objectifs de développement
 
 - [x] Avoir des voitures qui roulent
 - [x] Voitures aléatoires
 - [x] Décors aléatoires
-- [ ] Une voiture freine si obstacle est devant elle
-- [ ] Une voiture freine parfois
-- [ ] La voiture klaxonne si elle va trop lentement
+- [x] Les voitures freinent s'il y a un obstacle devant elles
+- [x] Une voiture freine selon une action utilisateur
+- [x] Les voitures klaxonnent si elle vont trop lentement
+- [ ] L'utilisateur peut modifier les variables
+- [ ] - d'effets sur les voitures (animations, particules de rage, etc.)
 
 ## Remerciements
 
