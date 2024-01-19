@@ -57,6 +57,10 @@ export class Car {
     this.speed = 0;
   }
 
+  toggle() {
+    this.speed === 0 ? this.start() : this.stop();
+  }
+
   adjustSpeedInFunctionOfCarsAhead(cars) {
     const nearestDistance = cars.reduce(
       (actualNearestCarDistance, otherCar) => {

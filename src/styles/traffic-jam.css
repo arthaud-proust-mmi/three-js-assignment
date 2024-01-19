@@ -1,0 +1,28 @@
+#bottomActions {
+  position: fixed;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  height: 4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+#toggleCar {
+  border: none;
+  cursor: pointer;
+  pointer-events: all;
+  font-size: 1.3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  background: #efefef8f;
+  height: 100%;
+  padding: 0 2rem;
+}
+#toggleCar:hover {
+  background: #efefefd1;
+}

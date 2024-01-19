@@ -8,7 +8,7 @@ const ROAD_WIDTH = 5;
 const FLOOR_HEIGHT = 0.1;
 const ROAD_LENGTH = 100;
 const FLOOR_WIDTH = ROAD_LENGTH / 2 - ROAD_WIDTH;
-const CAR_COUNT = 10;
+const CAR_COUNT = 20;
 
 export class TrafficJamSimulator {
   scene = null;
@@ -26,13 +26,7 @@ export class TrafficJamSimulator {
 
     this.scene.add(this.group);
 
-    window.addEventListener("mousedown", () => {
-      this.cars[0]?.stop();
-    });
-
-    window.addEventListener("mouseup", () => {
-      this.cars[0]?.start();
-    });
+    this.bindControls();
   }
 
   update({ delta }) {
@@ -166,5 +160,39 @@ export class TrafficJamSimulator {
     const carIndex = this.getCarIndex(car);
 
     return this.cars.slice(0, carIndex);
+  }
+
+  bindControls() {
+    const toggleCarBtn = document.getElementById("toggleCar");
+
+    toggleCarBtn.innerText = "Stop first vehicle";
+
+    const toggleFirstCar = () => {
+      const firstCar = this.cars[0];
+
+      if (!firstCar) {
+        return;
+      }
+
+      const isStopped = firstCar.speed === 0;
+
+      if (isStopped) {
+        firstCar.start();
+        toggleCarBtn.innerText = "Stop first vehicle";
+      } else {
+        firstCar.stop();
+        toggleCarBtn.innerText = "Start first vehicle";
+      }
+    };
+
+    toggleCarBtn.addEventListener("click", () => {
+      toggleFirstCar();
+    });
+
+    window.addEventListener("keypress", (e) => {
+      if (e.code === "Space") {
+        toggleFirstCar();
+      }
+    });
   }
 }
