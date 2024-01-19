@@ -1,5 +1,4 @@
-import { Car } from "@/traffic-jam/car";
-import { makeRandomCar } from "@/traffic-jam/objects/cars";
+import { Car } from "@/traffic-jam/entities/car";
 import { makeRandomDecoration } from "@/traffic-jam/objects/decorations";
 import { randomAngle } from "@/utils/random";
 import * as THREE from "three";
@@ -109,13 +108,10 @@ export class TrafficJamSimulator {
   }
 
   async addRandomCar() {
-    const carMesh = await makeRandomCar();
-
-    carMesh.position.z = -ROAD_LENGTH / 2;
-
-    const car = new Car(carMesh);
+    const car = await Car.makeRandom();
 
     car.start();
+    car.setPosition({ x: 0, y: 0, z: -ROAD_LENGTH / 2 });
 
     car.addToScene(this.group);
 
