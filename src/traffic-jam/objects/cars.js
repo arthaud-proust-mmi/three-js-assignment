@@ -7,22 +7,13 @@ const loadCar = async (carName) => {
   return enableShadows(carModel.scene);
 };
 
-const carsCache = {};
-const loadCachedCar = async (carName) => {
-  if (!carsCache[carName]) {
-    carsCache[carName] = await loadCar(carName);
-  }
-
-  return carsCache[carName].clone();
-};
-
-export const makePoliceCar = async () => loadCachedCar("police-car");
-export const makeCar1 = async () => loadCachedCar("car-1");
-export const makeCar2 = async () => loadCachedCar("car-2");
-export const makeSuv = async () => loadCachedCar("suv");
-export const makeTaxi = async () => loadCachedCar("taxi");
-export const makeSportsCar1 = async () => loadCachedCar("sports-car-1");
-export const makeSportsCar2 = async () => loadCachedCar("sports-car-2");
+export const makePoliceCar = async () => loadCar("police-car");
+export const makeCar1 = async () => loadCar("car-1");
+export const makeCar2 = async () => loadCar("car-2");
+export const makeSuv = async () => loadCar("suv");
+export const makeTaxi = async () => loadCar("taxi");
+export const makeSportsCar1 = async () => loadCar("sports-car-1");
+export const makeSportsCar2 = async () => loadCar("sports-car-2");
 
 const carMakers = [
   makePoliceCar,
