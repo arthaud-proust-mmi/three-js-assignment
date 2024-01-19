@@ -1,6 +1,7 @@
 import { Car } from "@/traffic-jam/car";
 import { makeRandomCar } from "@/traffic-jam/objects/cars";
 import { makeRandomDecoration } from "@/traffic-jam/objects/decorations";
+import { randomAngle } from "@/utils/random";
 import * as THREE from "three";
 import { randFloat, randInt } from "three/src/math/MathUtils";
 
@@ -94,12 +95,15 @@ export class TrafficJamSimulator {
 
     const side = randInt(0, 1) ? -1 : 1;
 
+    const roadSafeDistance = ROAD_WIDTH * 1.5;
     const maxDistance = (4 * ROAD_LENGTH) / 5;
     decorationMesh.position.x = randFloat(
-      (side * ROAD_WIDTH) / 2,
+      (side * roadSafeDistance) / 2,
       (side * maxDistance) / 2,
     );
     decorationMesh.position.z = randFloat(-maxDistance / 2, maxDistance / 2);
+
+    decorationMesh.rotation.y = randomAngle();
 
     return decorationMesh;
   }
