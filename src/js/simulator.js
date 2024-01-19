@@ -1,5 +1,5 @@
-import { Car } from "@/traffic-jam/entities/car";
-import { makeRandomDecoration } from "@/traffic-jam/objects/decorations";
+import { Car } from "@/js/entities/car";
+import { makeRandomDecoration } from "@/js/objects/decorations";
 import { randomAngle } from "@/utils/random";
 import * as THREE from "three";
 import { randFloat, randInt } from "three/src/math/MathUtils";
