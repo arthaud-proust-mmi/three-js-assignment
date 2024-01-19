@@ -2,15 +2,15 @@ import { makeRandomCar } from "@/traffic-jam/objects/cars";
 import * as THREE from "three";
 import { v4 as uuidv4 } from "uuid";
 
-const CAR_SPEED = 15;
-const STOP_DISTANCE = 5;
-const START_DISTANCE = 10;
-
 export class Car {
   _group = null;
 
   uuid = null;
 
+  stopDistance = 0;
+  startDistance = 0;
+
+  maxSpeed = 0;
   speed = 0;
 
   static async makeRandom() {
@@ -25,11 +25,11 @@ export class Car {
     this._group.add(model);
   }
 
-  addToScene(scene) {
+  addToGroup(scene) {
     scene.add(this._group);
   }
 
-  removeFromScene(scene) {
+  removeFromGroup(scene) {
     scene.remove(this._group);
   }
 
@@ -50,7 +50,7 @@ export class Car {
   }
 
   start() {
-    this.speed = CAR_SPEED;
+    this.speed = this.maxSpeed;
   }
 
   stop() {
@@ -61,24 +61,17 @@ export class Car {
     this.speed === 0 ? this.start() : this.stop();
   }
 
-  adjustSpeedInFunctionOfCarsAhead(cars) {
-    const nearestDistance = cars.reduce(
-      (actualNearestCarDistance, otherCar) => {
-        const otherCarDistance = this.computeDistanceWith(otherCar);
+  adjustSpeedInFunctionOfCar(car) {
+    const distance = this.distanceWithCar(car);
 
-        return Math.min(actualNearestCarDistance, otherCarDistance);
-      },
-      +Infinity,
-    );
-
-    if (nearestDistance < STOP_DISTANCE) {
+    if (distance < this.stopDistance) {
       this.stop();
-    } else if (nearestDistance > START_DISTANCE) {
+    } else if (distance > this.startDistance) {
       this.start();
     }
   }
 
-  computeDistanceWith(car) {
-    return Math.abs(car.getPosition().z - this._group.position.z);
+  distanceWithCar(car) {
+    return Math.abs(car.getPosition().z - this.getPosition().z);
   }
 }
