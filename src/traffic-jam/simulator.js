@@ -8,6 +8,7 @@ const ROAD_WIDTH = 5;
 const FLOOR_HEIGHT = 0.1;
 const ROAD_LENGTH = 100;
 const FLOOR_WIDTH = ROAD_LENGTH / 2 - ROAD_WIDTH;
+const CAR_COUNT = 10;
 
 export class TrafficJamSimulator {
   scene = null;
@@ -24,21 +25,37 @@ export class TrafficJamSimulator {
     this.group = await this.makeGroup();
 
     this.scene.add(this.group);
+
+    window.addEventListener("mousedown", () => {
+      this.cars[0]?.stop();
+    });
+
+    window.addEventListener("mouseup", () => {
+      this.cars[0]?.start();
+    });
   }
 
   update({ delta }) {
     if (this.elapsedTimeSinceCarAdded > 0.5) {
-      this.addRandomCar();
+      if (this.cars.length < CAR_COUNT) {
+        this.addRandomCar();
+      }
       this.elapsedTimeSinceCarAdded = 0;
     } else {
       this.elapsedTimeSinceCarAdded += delta;
     }
 
-    this.cars.forEach((car) => {
+    this.cars.forEach((car, index) => {
       car.update({ delta });
+
+      const carsAhead = this.getCarsAhead(car);
+      if (carsAhead.length) {
+        car.adjustSpeedInFunctionOfCarsAhead(carsAhead);
+      }
 
       if (this.isCarOutOfMap(car)) {
         this.removeCar(car);
+        return;
       }
     });
   }
@@ -121,10 +138,18 @@ export class TrafficJamSimulator {
   removeCar(carToRemove) {
     carToRemove.removeFromScene(this.group);
 
-    const carIndex = this.cars.findIndex(
-      (car) => car.uuid === carToRemove.uuid,
-    );
+    const carIndex = this.getCarIndex(carToRemove);
 
     this.cars.splice(carIndex, 1);
+  }
+
+  getCarIndex(carToFind) {
+    return this.cars.findIndex((car) => car.uuid === carToFind.uuid);
+  }
+
+  getCarsAhead(car) {
+    const carIndex = this.getCarIndex(car);
+
+    return this.cars.slice(0, carIndex);
   }
 }

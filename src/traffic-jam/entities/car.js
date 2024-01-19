@@ -3,6 +3,8 @@ import * as THREE from "three";
 import { v4 as uuidv4 } from "uuid";
 
 const CAR_SPEED = 15;
+const STOP_DISTANCE = 5;
+const START_DISTANCE = 10;
 
 export class Car {
   _group = null;
@@ -53,5 +55,28 @@ export class Car {
 
   stop() {
     this.speed = 0;
+  }
+
+  adjustSpeedInFunctionOfCarsAhead(cars) {
+    const nearestDistance = cars.reduce(
+      (actualNearestCarDistance, otherCar) => {
+        const otherCarDistance = this.computeDistanceWith(otherCar);
+
+        return Math.min(actualNearestCarDistance, otherCarDistance);
+      },
+      +Infinity,
+    );
+
+    console.log(nearestDistance);
+
+    if (nearestDistance < STOP_DISTANCE) {
+      this.stop();
+    } else if (nearestDistance > START_DISTANCE) {
+      this.start();
+    }
+  }
+
+  computeDistanceWith(car) {
+    return Math.abs(car.getPosition().z - this._group.position.z);
   }
 }

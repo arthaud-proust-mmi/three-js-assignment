@@ -47,8 +47,8 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   100,
 );
-camera.position.x = 30;
-camera.position.y = 10;
+camera.position.x = 10;
+camera.position.y = 45;
 camera.position.z = 0;
 camera.lookAt(new THREE.Vector3(0, 0, 0));
 scene.add(camera);
