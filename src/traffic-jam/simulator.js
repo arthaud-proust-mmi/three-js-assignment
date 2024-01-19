@@ -143,7 +143,12 @@ export class TrafficJamSimulator {
 
     const lastCardPosition = this.cars[this.cars.length - 1].getPosition();
 
-    if (lastCardPosition.z > CAR_SUMMON_POSITION.z + CAR_STOP_DISTANCE) {
+    const randomDistance = randFloat(0, 30);
+
+    if (
+      lastCardPosition.z >
+      CAR_SUMMON_POSITION.z + CAR_START_DISTANCE + randomDistance
+    ) {
       this.addRandomCar();
     }
 
