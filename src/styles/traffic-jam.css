@@ -11,18 +11,51 @@
 }
 
 #toggleCar {
+  font-family: "Play", sans-serif;
   border: none;
+  border-radius: 0;
   cursor: pointer;
   pointer-events: all;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 1.5rem;
   box-sizing: border-box;
-  background: #efefef8f;
   height: 100%;
   padding: 0 2rem;
 }
-#toggleCar:hover {
-  background: #efefefd1;
+
+#toggleCar.stopped {
+  background: #599234;
+  color: white;
+}
+#toggleCar.stopped:hover {
+  background: #71b146;
+}
+#toggleCar.stopped:active {
+  background: #497e26;
+}
+#toggleCar.stopped .stop {
+  display: none;
+}
+#toggleCar.stopped .start {
+  display: initial;
+}
+
+#toggleCar.started {
+  background: #923434;
+  color: white;
+}
+#toggleCar.started:hover {
+  background: #b14646;
+}
+#toggleCar.started:active {
+  background: #7e2626;
+}
+#toggleCar.started .start {
+  display: none;
+}
+#toggleCar.started .stop {
+  display: initial;
 }

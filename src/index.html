@@ -4,15 +4,30 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Traffic Jam Simulator</title>
-    <link rel="stylesheet" href="./styles/global.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Play&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles/global.css" />
+
+    <script defer src="https://unpkg.com/akar-icons-fonts"></script>
+    <script defer type="module" src="/script.js"></script>
   </head>
   <body>
     <main id="app">
       <canvas class="webgl"></canvas>
       <div id="bottomActions">
-        <button id="toggleCar"></button>
+        <button id="toggleCar" class="started">
+          <span class="stop">Stop first car</span>
+          <i class="stop ai-pause"></i>
+
+          <span class="start">Start first car</span>
+          <i class="start ai-play"></i>
+        </button>
       </div>
     </main>
-    <script type="module" src="./script.js"></script>
   </body>
 </html>

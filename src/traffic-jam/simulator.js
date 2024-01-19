@@ -202,8 +202,6 @@ export class TrafficJamSimulator {
   bindControls() {
     const toggleCarBtn = document.getElementById("toggleCar");
 
-    toggleCarBtn.innerText = "Stop first vehicle";
-
     const toggleFirstCar = () => {
       const firstCar = this.cars[0];
 
@@ -215,10 +213,12 @@ export class TrafficJamSimulator {
 
       if (isStopped) {
         firstCar.start();
-        toggleCarBtn.innerText = "Stop first vehicle";
+        toggleCarBtn.classList.remove("stopped");
+        toggleCarBtn.classList.add("started");
       } else {
         firstCar.stop();
-        toggleCarBtn.innerText = "Start first vehicle";
+        toggleCarBtn.classList.remove("started");
+        toggleCarBtn.classList.add("stopped");
       }
     };
 
