@@ -12,3 +12,15 @@ export const loadGltf = (path) => {
     );
   });
 };
+
+export const enableShadows = (scene) => {
+  const clone = scene.clone();
+
+  clone.traverse(function (node) {
+    if (node.isMesh) {
+      node.castShadow = true;
+    }
+  });
+
+  return clone;
+};

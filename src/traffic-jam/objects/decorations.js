@@ -1,4 +1,4 @@
-import { loadGltf } from "@/utils/gltf";
+import { enableShadows, loadGltf } from "@/utils/gltf";
 import { randomItem } from "@/utils/random";
 
 export const carsCache = {};
@@ -6,13 +6,7 @@ export const carsCache = {};
 const loadDecoration = async (carName) => {
   const carModel = await loadGltf(`/models/decorations/${carName}.glb`);
 
-  carModel.scene.traverse(function (node) {
-    if (node.isMesh) {
-      node.castShadow = true;
-    }
-  });
-
-  return carModel.scene;
+  return enableShadows(carModel.scene);
 };
 
 const decorationsCache = {};

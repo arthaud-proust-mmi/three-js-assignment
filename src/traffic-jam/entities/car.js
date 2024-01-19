@@ -2,13 +2,15 @@ import { makeRandomCar } from "@/traffic-jam/objects/cars";
 import * as THREE from "three";
 import { v4 as uuidv4 } from "uuid";
 
-const CAR_SPEED = 15;
-
 export class Car {
   _group = null;
 
   uuid = null;
 
+  stopDistance = 0;
+  startDistance = 0;
+
+  maxSpeed = 0;
   speed = 0;
 
   static async makeRandom() {
@@ -23,11 +25,11 @@ export class Car {
     this._group.add(model);
   }
 
-  addToScene(scene) {
+  addToGroup(scene) {
     scene.add(this._group);
   }
 
-  removeFromScene(scene) {
+  removeFromGroup(scene) {
     scene.remove(this._group);
   }
 
@@ -48,10 +50,28 @@ export class Car {
   }
 
   start() {
-    this.speed = CAR_SPEED;
+    this.speed = this.maxSpeed;
   }
 
   stop() {
     this.speed = 0;
+  }
+
+  toggle() {
+    this.speed === 0 ? this.start() : this.stop();
+  }
+
+  adjustSpeedInFunctionOfCar(car) {
+    const distance = this.distanceWithCar(car);
+
+    if (distance < this.stopDistance) {
+      this.stop();
+    } else if (distance > this.startDistance) {
+      this.start();
+    }
+  }
+
+  distanceWithCar(car) {
+    return Math.abs(car.getPosition().z - this.getPosition().z);
   }
 }

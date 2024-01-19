@@ -8,6 +8,16 @@ const ROAD_WIDTH = 5;
 const FLOOR_HEIGHT = 0.1;
 const ROAD_LENGTH = 100;
 const FLOOR_WIDTH = ROAD_LENGTH / 2 - ROAD_WIDTH;
+const CAR_COUNT = 15;
+const CAR_SUMMON_POSITION = {
+  x: 0,
+  y: 0,
+  z: -ROAD_LENGTH / 2,
+};
+
+const CAR_MAX_SPEED = 15;
+const CAR_STOP_DISTANCE = 5;
+const CAR_START_DISTANCE = 10;
 
 export class TrafficJamSimulator {
   scene = null;
@@ -24,21 +34,24 @@ export class TrafficJamSimulator {
     this.group = await this.makeGroup();
 
     this.scene.add(this.group);
+
+    this.bindControls();
   }
 
   update({ delta }) {
-    if (this.elapsedTimeSinceCarAdded > 0.5) {
-      this.addRandomCar();
-      this.elapsedTimeSinceCarAdded = 0;
-    } else {
-      this.elapsedTimeSinceCarAdded += delta;
-    }
+    this.addCarIfEnoughSpace();
 
     this.cars.forEach((car) => {
       car.update({ delta });
 
+      const carAhead = this.getCarAhead(car);
+      if (carAhead) {
+        car.adjustSpeedInFunctionOfCar(carAhead);
+      }
+
       if (this.isCarOutOfMap(car)) {
         this.removeCar(car);
+        return;
       }
     });
   }
@@ -86,6 +99,21 @@ export class TrafficJamSimulator {
       group.add(decoration);
     }
 
+    // Ambient light
+    const ambientLight = new THREE.AmbientLight("#EAE38C", 0.7);
+    group.add(ambientLight);
+
+    // Directional light
+    const moonLight = new THREE.DirectionalLight("#FF5733", 1);
+    moonLight.position.set(35, 20, -50);
+    const d = 50;
+    moonLight.shadow.camera.left = -d;
+    moonLight.shadow.camera.right = d;
+    moonLight.shadow.camera.bottom = -d;
+    moonLight.shadow.camera.top = d;
+    moonLight.castShadow = true;
+    group.add(moonLight);
+
     return group;
   }
 
@@ -107,24 +135,96 @@ export class TrafficJamSimulator {
     return decorationMesh;
   }
 
+  async addCarIfEnoughSpace() {
+    if (this.cars.length === 0) {
+      this.addRandomCar();
+      return;
+    }
+
+    const lastCardPosition = this.cars[this.cars.length - 1].getPosition();
+
+    if (lastCardPosition.z > CAR_SUMMON_POSITION.z + CAR_STOP_DISTANCE) {
+      this.addRandomCar();
+    }
+
+    this.elapsedTimeSinceCarAdded = 0;
+  }
+
   async addRandomCar() {
+    if (!this.group) {
+      return;
+    }
+
     const car = await Car.makeRandom();
+    car.addToGroup(this.group);
 
-    car.start();
-    car.setPosition({ x: 0, y: 0, z: -ROAD_LENGTH / 2 });
+    car.maxSpeed = CAR_MAX_SPEED;
+    car.stopDistance = CAR_STOP_DISTANCE;
+    car.startDistance = CAR_START_DISTANCE;
 
-    car.addToScene(this.group);
+    car.setPosition(CAR_SUMMON_POSITION);
+
+    if (this.cars.length === 0) {
+      car.start();
+    }
 
     this.cars.push(car);
+
+    return car;
   }
 
   removeCar(carToRemove) {
-    carToRemove.removeFromScene(this.group);
+    carToRemove.removeFromGroup(this.group);
 
-    const carIndex = this.cars.findIndex(
-      (car) => car.uuid === carToRemove.uuid,
-    );
+    const carIndex = this.getCarIndex(carToRemove);
 
     this.cars.splice(carIndex, 1);
+  }
+
+  getCarIndex(carToFind) {
+    return this.cars.findIndex((car) => car.uuid === carToFind.uuid);
+  }
+
+  getCarAhead(car) {
+    const carIndex = this.getCarIndex(car);
+
+    if (carIndex === 0) {
+      return null;
+    }
+    return this.cars[carIndex - 1];
+  }
+
+  bindControls() {
+    const toggleCarBtn = document.getElementById("toggleCar");
+
+    toggleCarBtn.innerText = "Stop first vehicle";
+
+    const toggleFirstCar = () => {
+      const firstCar = this.cars[0];
+
+      if (!firstCar) {
+        return;
+      }
+
+      const isStopped = firstCar.speed === 0;
+
+      if (isStopped) {
+        firstCar.start();
+        toggleCarBtn.innerText = "Stop first vehicle";
+      } else {
+        firstCar.stop();
+        toggleCarBtn.innerText = "Start first vehicle";
+      }
+    };
+
+    toggleCarBtn.addEventListener("click", () => {
+      toggleFirstCar();
+    });
+
+    window.addEventListener("keypress", (e) => {
+      if (e.code === "Space") {
+        toggleFirstCar();
+      }
+    });
   }
 }
