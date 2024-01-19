@@ -7,8 +7,8 @@ const carHorn4 = new Audio("/sounds/car-horn-4.mp3");
 
 const horns = [carHorn1, carHorn2, carHorn3, carHorn4];
 
-export const playRandomCarHorn = () => {
-  const horn = randomItem(horns).cloneNode();
+export const playRandomCarHorn = (): void => {
+  const horn = randomItem(horns).cloneNode() as HTMLAudioElement;
   horn.currentTime = 0;
   horn.play();
 };

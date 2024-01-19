@@ -18,12 +18,12 @@ const CAR_STOP_DISTANCE = 5;
 const CAR_START_DISTANCE = 10;
 
 export class TrafficJamSimulator {
-  scene;
-  group;
+  scene: THREE.Scene;
+  group: THREE.Group;
 
-  cars = [];
+  cars: Array<Car> = [];
 
-  isMuted = true;
+  isMuted: boolean = true;
 
   constructor({ scene }) {
     this.scene = scene;
@@ -37,7 +37,7 @@ export class TrafficJamSimulator {
     this.bindControls();
   }
 
-  update({ delta }) {
+  update({ delta }: { delta: number }): void {
     this.addCarIfEnoughSpace();
 
     this.cars.forEach((car) => {
@@ -55,12 +55,12 @@ export class TrafficJamSimulator {
     });
   }
 
-  isCarOutOfMap(car) {
+  isCarOutOfMap(car: Car): boolean {
     const { z } = car.getPosition();
     return z > ROAD_LENGTH / 2 || z < -ROAD_LENGTH / 2;
   }
 
-  async makeGroup() {
+  async makeGroup(): Promise<THREE.Group> {
     const group = new THREE.Group();
 
     const floor = new THREE.Group();
@@ -116,7 +116,7 @@ export class TrafficJamSimulator {
     return group;
   }
 
-  async makeRandomDecoration() {
+  async makeRandomDecoration(): Promise<THREE.Group> {
     const decorationMesh = await makeRandomDecoration();
 
     const side = randomInt(0, 1) ? -1 : 1;
@@ -134,7 +134,7 @@ export class TrafficJamSimulator {
     return decorationMesh;
   }
 
-  private async addCarIfEnoughSpace() {
+  private async addCarIfEnoughSpace(): Promise<void> {
     if (this.cars.length === 0) {
       this.addRandomCar();
       return;
@@ -152,7 +152,7 @@ export class TrafficJamSimulator {
     }
   }
 
-  private async addRandomCar() {
+  private async addRandomCar(): Promise<Car> {
     if (!this.group) {
       return;
     }
@@ -175,7 +175,7 @@ export class TrafficJamSimulator {
     return car;
   }
 
-  private removeCar(carToRemove) {
+  private removeCar(carToRemove: Car): void {
     carToRemove.removeFromGroup(this.group);
 
     const carIndex = this.getCarIndex(carToRemove);
@@ -183,11 +183,11 @@ export class TrafficJamSimulator {
     this.cars.splice(carIndex, 1);
   }
 
-  private getCarIndex(carToFind) {
+  private getCarIndex(carToFind: Car): number {
     return this.cars.findIndex((car) => car.uuid === carToFind.uuid);
   }
 
-  private getCarAhead(car) {
+  private getCarAhead(car: Car): Car | null {
     const carIndex = this.getCarIndex(car);
 
     if (carIndex === 0) {
@@ -196,7 +196,7 @@ export class TrafficJamSimulator {
     return this.cars[carIndex - 1];
   }
 
-  private bindControls() {
+  private bindControls(): void {
     const toggleSoundBtn = document.getElementById("toggleSound");
     const toggleCarBtn = document.getElementById("toggleCar");
 

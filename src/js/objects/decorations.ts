@@ -1,7 +1,7 @@
 import { enableShadows, loadGltf } from "@/js/utils/gltf";
 import { randomItem } from "@/js/utils/random";
 
-const loadDecoration = async (carName) => {
+const loadDecoration = async (carName: string) => {
   const carModel = await loadGltf(`/models/decorations/${carName}.glb`);
 
   return enableShadows(carModel.scene);
