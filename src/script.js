@@ -57,12 +57,18 @@ scene.add(camera);
  * Lights
  */
 // Ambient light
-const ambientLight = new THREE.AmbientLight("#b9d5ff", 1);
+const ambientLight = new THREE.AmbientLight("#EAE38C", 0.7);
 scene.add(ambientLight);
 
 // Directional light
-const moonLight = new THREE.DirectionalLight("#FFFFFF", 1);
-moonLight.position.set(4, 5, -2);
+const moonLight = new THREE.DirectionalLight("#FF5733", 1);
+moonLight.position.set(35, 20, -50);
+const d = 50;
+moonLight.shadow.camera.left = -d;
+moonLight.shadow.camera.right = d;
+moonLight.shadow.camera.bottom = -d;
+moonLight.shadow.camera.top = d;
+moonLight.castShadow = true;
 scene.add(moonLight);
 
 // Controls
@@ -77,6 +83,7 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
 
 /**
  * Animate

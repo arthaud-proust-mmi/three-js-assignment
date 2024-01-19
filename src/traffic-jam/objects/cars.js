@@ -5,6 +5,13 @@ export const carsCache = {};
 
 const loadCar = async (carName) => {
   const carModel = await loadGltf(`/models/cars/${carName}.glb`);
+
+  carModel.scene.traverse(function (node) {
+    if (node.isMesh) {
+      node.castShadow = true;
+    }
+  });
+
   return carModel.scene;
 };
 

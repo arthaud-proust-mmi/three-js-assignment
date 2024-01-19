@@ -40,9 +40,10 @@ export class TrafficJamSimulator {
       ROAD_LENGTH,
     );
     const road = new THREE.Mesh(roadGeometry, roadMaterial);
+    road.receiveShadow = true;
     floor.add(road);
 
-    const grassMaterial = new THREE.MeshStandardMaterial({ color: "green" });
+    const grassMaterial = new THREE.MeshStandardMaterial({ color: "#268b07" });
     const grassGeometry = new THREE.BoxGeometry(
       FLOOR_WIDTH,
       FLOOR_HEIGHT,
@@ -50,10 +51,12 @@ export class TrafficJamSimulator {
     );
     const grassLeft = new THREE.Mesh(grassGeometry, grassMaterial);
     grassLeft.position.x = -(FLOOR_WIDTH / 2 + ROAD_WIDTH / 2);
+    grassLeft.receiveShadow = true;
     floor.add(grassLeft);
 
     const grassRight = new THREE.Mesh(grassGeometry, grassMaterial);
     grassRight.position.x = FLOOR_WIDTH / 2 + ROAD_WIDTH / 2;
+    grassRight.receiveShadow = true;
     floor.add(grassRight);
 
     return group;
