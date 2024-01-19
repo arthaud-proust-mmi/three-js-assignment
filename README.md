@@ -18,7 +18,7 @@ Manipulez les variables pour étudier le phénomène qui se créée !
 - [x] Une voiture freine selon une action utilisateur
 - [x] Les voitures klaxonnent si elle vont trop lentement
 - [ ] L'utilisateur peut modifier les variables
-- [ ] - d'effets sur les voitures (animations, particules de rage, etc.)
+- [ ] plus d'effets sur les voitures (animations, particules de rage, etc.)
 
 ## Remerciements
 
