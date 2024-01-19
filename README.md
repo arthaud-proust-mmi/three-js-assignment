@@ -10,13 +10,12 @@ Le rendu est un petit jeu où une personne se cache dans le brouillard et doit a
 
 ## Objectifs de développement
 
-- [ ] Pouvoir se déplacer dans le brouillard
-- [ ] Création du jeu avec point de départ et objectif d'arrivée
-- [ ] Placement d'objets pour plus de réalisme
-- [ ] Placement d'ennemis, si l'utilisateur est trop proche fin du jeu et retour au départ
-- [ ] Placement procédural des objets
-- [ ] Placement procédural des ennemis
-- [ ] Indications lumineuses
+- [x] Avoir des voitures qui roulent
+- [x] Voitures aléatoires
+- [x] Décors aléatoires
+- [ ] Une voiture freine si obstacle est devant elle
+- [ ] Une voiture freine parfois
+- [ ] La voiture klaxonne si elle va trop lentement
 
 ## Remerciements
 
