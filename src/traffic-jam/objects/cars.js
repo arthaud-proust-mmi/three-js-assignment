@@ -1,7 +1,5 @@
-import { randomItem } from "@/utils/array";
 import { loadGltf } from "@/utils/gltf";
-
-export const carsCache = {};
+import { randomItem } from "@/utils/random";
 
 const loadCar = async (carName) => {
   const carModel = await loadGltf(`/models/cars/${carName}.glb`);
@@ -15,13 +13,16 @@ const loadCar = async (carName) => {
   return carModel.scene;
 };
 
-const loadCachedCar = async (carName) => {
-  if (!carsCache[carName]) {
-    carsCache[carName] = await loadCar(carName);
-  }
+// TODO see if cache gltf models is an improvement
+// ex of cache system :
+// const carsCache = {};
+// const loadCachedCar = async (carName) => {
+//   if (!carsCache[carName]) {
+//     carsCache[carName] = await loadCar(carName);
+//   }
 
-  return carsCache[carName];
-};
+//   return carsCache[carName];
+// };
 
 export const makePoliceCar = async () => loadCar("police-car");
 export const makeCar1 = async () => loadCar("car-1");

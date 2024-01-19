@@ -1,6 +1,8 @@
+import { Car } from "@/traffic-jam/car";
 import { makeRandomCar } from "@/traffic-jam/objects/cars";
+import { makeRandomDecoration } from "@/traffic-jam/objects/decorations";
 import * as THREE from "three";
-import { Car } from "./car";
+import { randFloat, randInt } from "three/src/math/MathUtils";
 
 const ROAD_WIDTH = 5;
 const FLOOR_HEIGHT = 0.1;
@@ -19,14 +21,34 @@ export class TrafficJamSimulator {
   }
 
   async init() {
-    const group = await this.buildGroup();
+    this.group = await this.makeGroup();
 
-    this.scene.add(group);
-
-    await this.addCar();
+    this.scene.add(this.group);
   }
 
-  async buildGroup() {
+  update({ delta }) {
+    if (this.elapsedTimeSinceCarAdded > 0.5) {
+      this.addRandomCar();
+      this.elapsedTimeSinceCarAdded = 0;
+    } else {
+      this.elapsedTimeSinceCarAdded += delta;
+    }
+
+    this.cars.forEach((car) => {
+      car.update({ delta });
+
+      if (this.isCarOutOfMap(car)) {
+        this.removeCar(car);
+      }
+    });
+  }
+
+  isCarOutOfMap(car) {
+    const { z } = car.getPosition();
+    return z > ROAD_LENGTH / 2 || z < -ROAD_LENGTH / 2;
+  }
+
+  async makeGroup() {
     const group = new THREE.Group();
 
     const floor = new THREE.Group();
@@ -59,46 +81,45 @@ export class TrafficJamSimulator {
     grassRight.receiveShadow = true;
     floor.add(grassRight);
 
+    for (let i = 0; i < 100; i++) {
+      const decoration = await this.makeRandomDecoration();
+      group.add(decoration);
+    }
+
     return group;
   }
 
-  update({ delta }) {
-    if (this.elapsedTimeSinceCarAdded > 0.5) {
-      this.addCar();
-      this.elapsedTimeSinceCarAdded = 0;
-    } else {
-      this.elapsedTimeSinceCarAdded += delta;
-    }
+  async makeRandomDecoration() {
+    const decorationMesh = await makeRandomDecoration();
 
-    this.cars.forEach((car) => {
-      car.update({ delta });
+    const side = randInt(0, 1) ? -1 : 1;
 
-      if (this.isCarOutOfMap(car)) {
-        this.removeCar(car);
-      }
-    });
+    const maxDistance = (4 * ROAD_LENGTH) / 5;
+    decorationMesh.position.x = randFloat(
+      (side * ROAD_WIDTH) / 2,
+      (side * maxDistance) / 2,
+    );
+    decorationMesh.position.z = randFloat(-maxDistance / 2, maxDistance / 2);
+
+    return decorationMesh;
   }
 
-  isCarOutOfMap(car) {
-    const { z } = car.getPosition();
-    return z > ROAD_LENGTH / 2 || z < -ROAD_LENGTH / 2;
-  }
+  async addRandomCar() {
+    const carMesh = await makeRandomCar();
 
-  async addCar() {
-    const carModel = await makeRandomCar();
+    carMesh.position.z = -ROAD_LENGTH / 2;
 
-    carModel.position.z = -ROAD_LENGTH / 2;
-
-    const car = new Car(carModel);
-    car.addToScene(this.scene);
+    const car = new Car(carMesh);
 
     car.start();
+
+    car.addToScene(this.group);
 
     this.cars.push(car);
   }
 
   removeCar(carToRemove) {
-    carToRemove.removeFromScene(this.scene);
+    carToRemove.removeFromScene(this.group);
 
     const carIndex = this.cars.findIndex(
       (car) => car.uuid === carToRemove.uuid,
