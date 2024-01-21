@@ -2,6 +2,7 @@ import { Car, CarSettings } from "@/js/entities/car";
 import { makeRandomDecoration } from "@/js/objects/decorations";
 import { randomAngle, randomFloat, randomInt } from "@/js/utils/random";
 import * as THREE from "three";
+import { CarFactory } from "./entities/car.factory";
 
 const ROAD_WIDTH = 5;
 const FLOOR_HEIGHT = 0.1;
@@ -31,7 +32,7 @@ export class TrafficJamSimulator {
   private toggleCarBtn = document.getElementById("toggleCar");
 
   constructor({ settings, scene }) {
-    this.defineSettings(settings);
+    this.applySettings(settings);
     this.scene = scene;
   }
 
@@ -43,11 +44,11 @@ export class TrafficJamSimulator {
     this.bindControls();
   }
 
-  defineSettings(settings: TrafficJamSimulatorSettings) {
+  applySettings(settings: TrafficJamSimulatorSettings) {
     this.settings = settings;
 
     this.cars.forEach((car) => {
-      car.defineSettings(this.settings.car);
+      car.applySettings(this.settings.car);
     });
   }
 
@@ -174,13 +175,11 @@ export class TrafficJamSimulator {
       return;
     }
 
-    const car = await Car.makeRandom({
+    const car = await CarFactory.makeRandom({
       simulator: this,
       settings: this.settings.car,
     });
     car.addToGroup(this.group);
-
-    car.defineSettings(this.settings.car);
 
     car.setPosition(CAR_SUMMON_POSITION);
 
@@ -225,23 +224,23 @@ export class TrafficJamSimulator {
       }
     });
 
-    const toggleFirstCar = () => {
+    const toggleFirstCarState = () => {
       const firstCar = this.cars[0];
 
       if (!firstCar) {
         return;
       }
 
-      firstCar.toggle();
+      firstCar.toggleState();
     };
 
     this.toggleCarBtn.addEventListener("click", () => {
-      toggleFirstCar();
+      toggleFirstCarState();
     });
 
     window.addEventListener("keypress", (e) => {
       if (e.code === "Space") {
-        toggleFirstCar();
+        toggleFirstCarState();
       }
     });
   }

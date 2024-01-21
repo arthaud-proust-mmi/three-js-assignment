@@ -1,4 +1,3 @@
-import { makeRandomCar } from "@/js/objects/cars";
 import * as THREE from "three";
 import { v4 as uuidv4 } from "uuid";
 import { TrafficJamSimulator } from "../simulator";
@@ -17,30 +16,18 @@ export class Car {
   private group: THREE.Group;
   private simulator: TrafficJamSimulator;
 
-  uuid: uuidv4;
+  readonly uuid: uuidv4;
 
   state: "started" | "stopped";
 
   private settings: CarSettings;
 
-  speedTarget: number = 0;
+  private speedTarget: number = 0;
   speed: number = 0;
 
-  honkUnderSpeed: number = 10;
-  honkInterval: number = 4;
-  noHonkedSince: number = 0;
-
-  static async makeRandom({
-    simulator,
-    settings,
-  }: {
-    simulator: TrafficJamSimulator;
-    settings: CarSettings;
-  }): Promise<Car> {
-    const model = await makeRandomCar();
-
-    return new Car({ model, simulator, settings });
-  }
+  private readonly honkUnderSpeed: number = 10;
+  private readonly honkInterval: number = 4;
+  private noHonkedSince: number = 0;
 
   constructor({
     model,
@@ -53,14 +40,14 @@ export class Car {
   }) {
     this.uuid = uuidv4();
 
-    this.defineSettings(settings);
+    this.applySettings(settings);
     this.simulator = simulator;
 
     this.group = new THREE.Group();
     this.group.add(model);
   }
 
-  defineSettings(settings: CarSettings) {
+  applySettings(settings: CarSettings) {
     this.settings = settings;
 
     if (this.state === "started") {
@@ -128,7 +115,7 @@ export class Car {
     this.speedTarget = MIN_SPEED;
   }
 
-  toggle(): void {
+  toggleState(): void {
     this.state === "started" ? this.stop() : this.start();
   }
 

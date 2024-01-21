@@ -69,7 +69,7 @@ gui
   .max(20)
   .step(1)
   .onFinishChange(() => {
-    simulator.defineSettings(simulatorSettings);
+    simulator.applySettings(simulatorSettings);
   });
 
 gui
@@ -78,7 +78,7 @@ gui
   .max(5)
   .step(0.1)
   .onFinishChange(() => {
-    simulator.defineSettings(simulatorSettings);
+    simulator.applySettings(simulatorSettings);
   });
 
 gui
@@ -87,7 +87,7 @@ gui
   .max(30)
   .step(1)
   .onFinishChange(() => {
-    simulator.defineSettings(simulatorSettings);
+    simulator.applySettings(simulatorSettings);
   });
 
 gui
@@ -96,7 +96,7 @@ gui
   .max(30)
   .step(1)
   .onFinishChange(() => {
-    simulator.defineSettings(simulatorSettings);
+    simulator.applySettings(simulatorSettings);
   });
 
 gui
@@ -105,7 +105,7 @@ gui
   .max(20)
   .step(1)
   .onFinishChange(() => {
-    simulator.defineSettings(simulatorSettings);
+    simulator.applySettings(simulatorSettings);
   });
 
 simulator.init();
