@@ -43,6 +43,7 @@ window.addEventListener("resize", () => {
  * GUI
  */
 const gui = new GUI();
+gui.close();
 
 /**
  * Experience
