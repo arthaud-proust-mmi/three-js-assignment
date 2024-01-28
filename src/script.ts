@@ -40,12 +40,6 @@ window.addEventListener("resize", () => {
 });
 
 /**
- * GUI
- */
-const gui = new GUI();
-gui.close();
-
-/**
  * Experience
  */
 const simulatorSettings: TrafficJamSimulatorSettings = {
@@ -63,51 +57,57 @@ const simulator = new TrafficJamSimulator({
   settings: simulatorSettings,
 });
 
-gui
-  .add(simulatorSettings, "maxCar")
-  .min(2)
-  .max(20)
-  .step(1)
-  .onFinishChange(() => {
-    simulator.applySettings(simulatorSettings);
-  });
+/**
+ * GUI
+ */
+if (window.location.hash === "#debug") {
+  const gui = new GUI();
 
-gui
-  .add(simulatorSettings.car, "acceleration")
-  .min(0.1)
-  .max(5)
-  .step(0.1)
-  .onFinishChange(() => {
-    simulator.applySettings(simulatorSettings);
-  });
+  gui
+    .add(simulatorSettings, "maxCar")
+    .min(2)
+    .max(20)
+    .step(1)
+    .onFinishChange(() => {
+      simulator.applySettings(simulatorSettings);
+    });
 
-gui
-  .add(simulatorSettings.car, "maxSpeed")
-  .min(5)
-  .max(30)
-  .step(1)
-  .onFinishChange(() => {
-    simulator.applySettings(simulatorSettings);
-  });
+  gui
+    .add(simulatorSettings.car, "acceleration")
+    .min(0.1)
+    .max(5)
+    .step(0.1)
+    .onFinishChange(() => {
+      simulator.applySettings(simulatorSettings);
+    });
 
-gui
-  .add(simulatorSettings.car, "stopDistance")
-  .min(5)
-  .max(30)
-  .step(1)
-  .onFinishChange(() => {
-    simulator.applySettings(simulatorSettings);
-  });
+  gui
+    .add(simulatorSettings.car, "maxSpeed")
+    .min(5)
+    .max(30)
+    .step(1)
+    .onFinishChange(() => {
+      simulator.applySettings(simulatorSettings);
+    });
 
-gui
-  .add(simulatorSettings.car, "startDistance")
-  .min(7)
-  .max(20)
-  .step(1)
-  .onFinishChange(() => {
-    simulator.applySettings(simulatorSettings);
-  });
+  gui
+    .add(simulatorSettings.car, "stopDistance")
+    .min(5)
+    .max(30)
+    .step(1)
+    .onFinishChange(() => {
+      simulator.applySettings(simulatorSettings);
+    });
 
+  gui
+    .add(simulatorSettings.car, "startDistance")
+    .min(7)
+    .max(20)
+    .step(1)
+    .onFinishChange(() => {
+      simulator.applySettings(simulatorSettings);
+    });
+}
 simulator.init();
 
 /**

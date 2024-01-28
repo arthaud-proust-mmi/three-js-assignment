@@ -117,15 +117,15 @@ export class TrafficJamSimulator {
     group.add(ambientLight);
 
     // Directional light
-    const moonLight = new THREE.DirectionalLight("#FF5733", 1);
-    moonLight.position.set(35, 20, -50);
+    const directionalLight = new THREE.DirectionalLight("#FF5733", 1);
+    directionalLight.position.set(35, 20, -50);
     const d = 50;
-    moonLight.shadow.camera.left = -d;
-    moonLight.shadow.camera.right = d;
-    moonLight.shadow.camera.bottom = -d;
-    moonLight.shadow.camera.top = d;
-    moonLight.castShadow = true;
-    group.add(moonLight);
+    directionalLight.shadow.camera.left = -d;
+    directionalLight.shadow.camera.right = d;
+    directionalLight.shadow.camera.bottom = -d;
+    directionalLight.shadow.camera.top = d;
+    directionalLight.castShadow = true;
+    group.add(directionalLight);
 
     return group;
   }
